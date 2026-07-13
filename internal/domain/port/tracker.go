@@ -1,6 +1,8 @@
 package port
 
+import "context"
+
 type TrackerClient interface {
-	FetchInfo(url string) (title string, infoHash string, err error)
-	DownloadTorrent(url string) (torrentBytes []byte, err error)
+	FetchInfo(ctx context.Context, url string) (title string, infoHash string, err error)
+	DownloadTorrent(ctx context.Context, url string) (torrentBytes []byte, err error)
 }
