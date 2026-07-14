@@ -1,0 +1,42 @@
+package usecase
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/deliseev/glazius/internal/domain/entity"
+	"github.com/deliseev/glazius/internal/domain/port"
+	"github.com/google/uuid"
+)
+
+type AddSeriesUseCase struct {
+	tracker    port.TrackerClient
+	repository port.SeriesRepository
+}
+
+func NewAddSeriesUseCase(tracker port.TrackerClient, repository port.SeriesRepository) AddSeriesUseCase {
+	return AddSeriesUseCase{
+		tracker:    tracker,
+		repository: repository,
+	}
+}
+
+func (uc AddSeriesUseCase) Execute(ctx context.Context, url string) error {
+	title, infoHash, err := uc.tracker.FetchInfo(ctx, url)
+	if err != nil {
+		return fmt.Errorf("fetch error: %w", err)
+	}
+
+	newSeries := entity.Series{
+		ID:             uuid.NewString(),
+		URL:            url,
+		Title:          title,
+		Description:    "",
+		BaseInfoHash:   infoHash,
+		LatestInfoHash: "",
+		PendingAck:     false,
+	}
+	uc.repository.Save(newSeries)
+
+	return nil
+}
