@@ -3,6 +3,7 @@ package tracker
 import (
 	"context"
 	"fmt"
+	"log"
 	"strings"
 
 	"net/http"
@@ -67,4 +68,9 @@ func (c *RutrackerClient) FetchInfo(ctx context.Context, url string) (string, st
 	}
 	// 5. Возвращаем title и hash
 	return title, parts[0], nil
+}
+
+func (c *RutrackerClient) DownloadTorrent(ctx context.Context, url string) (torrentBytes []byte, err error) {
+	log.Fatalf("not implemented!")
+	return nil, nil
 }
