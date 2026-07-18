@@ -3,6 +3,7 @@ package tracker
 import (
 	"context"
 	"fmt"
+	"net"
 	"strings"
 	"time"
 
@@ -23,6 +24,10 @@ func NewRutrackerClient() (*RutrackerClient, error) {
 
 	transport := &http.Transport{
 		DisableKeepAlives: true,
+		DialContext: (&net.Dialer{
+			Timeout:   30 * time.Second,
+			DualStack: false, // Отключаем попытки использовать IPv6
+		}).DialContext,
 	}
 
 	client := &http.Client{

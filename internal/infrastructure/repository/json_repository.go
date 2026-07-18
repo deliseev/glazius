@@ -40,11 +40,17 @@ func NewJSONRepository(path string) (*JSONRepository, error) {
 	return repo, nil
 }
 
-func (r *JSONRepository) Save(s entity.Series) error {
+func (r *JSONRepository) Save(series entity.Series) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
-	r.data[s.ID] = s
+	// Не добавлять дубликаты сериалов
+	for _, s := range r.data {
+		if s.BaseInfoHash == series.BaseInfoHash {
+			return fmt.Errorf("duplicate series: %v", series.BaseInfoHash)
+		}
+	}
+	r.data[series.ID] = series
 
 	file, err := json.MarshalIndent(r.data, "", "  ")
 	if err != nil {

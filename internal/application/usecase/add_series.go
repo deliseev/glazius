@@ -22,13 +22,11 @@ func NewAddSeriesUseCase(tracker port.TrackerClient, repository port.SeriesRepos
 }
 
 func (uc AddSeriesUseCase) Execute(ctx context.Context, url string) error {
-	// 1. Получаем инфо (заголовок и хеш)
 	title, infoHash, err := uc.tracker.FetchInfo(ctx, url)
 	if err != nil {
 		return fmt.Errorf("fetch error: %w", err)
 	}
 
-	// 4. Создаем сущность
 	newSeries := entity.Series{
 		ID:             uuid.NewString(),
 		URL:            url,
