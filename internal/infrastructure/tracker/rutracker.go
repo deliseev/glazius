@@ -3,8 +3,6 @@ package tracker
 import (
 	"context"
 	"fmt"
-	"log"
-	"os"
 	"strings"
 	"time"
 
@@ -55,37 +53,24 @@ func (c *RutrackerClient) getDocument(ctx context.Context, url string) (*goquery
 	return goquery.NewDocumentFromReader(utf8Reader)
 }
 
-func (c *RutrackerClient) FetchInfo(ctx context.Context, url string) (string, string, string, error) {
+func (c *RutrackerClient) FetchInfo(ctx context.Context, url string) (string, string, error) {
 	doc, err := c.getDocument(ctx, url)
 	if err != nil {
-		return "", "", "", fmt.Errorf("fail to parse document: %w", err)
+		return "", "", fmt.Errorf("fail to parse document: %w", err)
 	}
 
 	title := strings.TrimSpace(doc.Find("h1.maintitle").Text())
-	downloadURL, exists := doc.Find("a[href^='dl.php?t=']").Attr("href")
-	if !exists {
-		html, _ := doc.Html()
-		os.WriteFile("debug.html", []byte(html), 0644)
-		fmt.Println("Debug HTML saved to debug.html")
-		return "", "", "", fmt.Errorf("download link not found")
-	}
-
-	// Формируем полный URL для скачивания
-	// Rutracker требует относительный путь от корня форума
-	fullDownloadURL := "https://rutracker.org/forum/" + downloadURL
-	log.Printf("download url: %v", fullDownloadURL)
-
 	magnetLink, _ := doc.Find("a[href^='magnet:']").Attr("href")
 	// Вырезаем кусок после "urn:btih:"
 	// magnet:?xt=urn:btih:50AD87D0A55D32440B91FA66EE24B71AD8A3E190&tr=...
 	parts := strings.Split(magnetLink, "urn:btih:")
 	if len(parts) < 2 {
-		return "", "", "", fmt.Errorf("hash prefix not found in %v (%v)", magnetLink, parts)
+		return "", "", fmt.Errorf("hash prefix not found in %v (%v)", magnetLink, parts)
 	}
 	parts = strings.Split(parts[1], "&")
 	if len(parts) < 1 {
-		return "", "", "", fmt.Errorf("hash postfix not found in %v", parts[1])
+		return "", "", fmt.Errorf("hash postfix not found in %v", parts[1])
 	}
 	// 5. Возвращаем title и hash
-	return title, parts[0], fullDownloadURL, nil
+	return title, parts[0], nil
 }

@@ -38,7 +38,7 @@ func (uc *CheckUpdatesUseCase) Execute(ctx context.Context) error {
 }
 
 func (uc *CheckUpdatesUseCase) checkSingleSeries(ctx context.Context, s entity.Series) error {
-	title, infoHash, link, err := uc.tracker.FetchInfo(ctx, s.URL)
+	title, infoHash, err := uc.tracker.FetchInfo(ctx, s.URL)
 	if err != nil {
 		return fmt.Errorf("fetch: %w", err)
 	}
@@ -50,7 +50,6 @@ func (uc *CheckUpdatesUseCase) checkSingleSeries(ctx context.Context, s entity.S
 	if s.LatestInfoHash != infoHash {
 		s.PendingAck = true
 		s.LatestInfoHash = infoHash
-		s.TorrentLink = link
 
 		err = uc.repo.Save(s)
 		if err != nil {

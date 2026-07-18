@@ -14,8 +14,8 @@ func TestCheckUpdatesUseCase_Execute(t *testing.T) {
 	newHash := "new-hash"
 
 	tracker := &testutils.TrackerClientMock{
-		FetchInfoFn: func(ctx context.Context, url string) (string, string, string, error) {
-			return "Title", newHash, "", nil
+		FetchInfoFn: func(ctx context.Context, url string) (string, string, error) {
+			return "Title", newHash, nil
 		},
 	}
 

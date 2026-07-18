@@ -7,10 +7,10 @@ import (
 )
 
 type TrackerClientMock struct {
-	FetchInfoFn func(ctx context.Context, url string) (string, string, string, error)
+	FetchInfoFn func(ctx context.Context, url string) (string, string, error)
 }
 
-func (m *TrackerClientMock) FetchInfo(ctx context.Context, u string) (string, string, string, error) {
+func (m *TrackerClientMock) FetchInfo(ctx context.Context, u string) (string, string, error) {
 	return m.FetchInfoFn(ctx, u)
 }
 

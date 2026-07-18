@@ -17,11 +17,11 @@ type mockTrackerClient struct {
 	torrent []byte
 }
 
-func (tc *mockTrackerClient) FetchInfo(ctx context.Context, url string) (title string, infoHash string, link string, err error) {
+func (tc *mockTrackerClient) FetchInfo(ctx context.Context, url string) (title string, infoHash string, err error) {
 	if tc.err != nil {
-		return "", "", "", tc.err
+		return "", "", tc.err
 	}
-	return tc.title, tc.hash, tc.link, nil
+	return tc.title, tc.hash, nil
 }
 
 type mockRepository struct {

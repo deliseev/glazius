@@ -17,11 +17,10 @@ func TestFetchInfo(t *testing.T) {
 		fileName  string
 		wantTitle string
 		wantHash  string
-		wantLink  string
 		wantErr   bool
 	}{
-		{"Empty Page", "testdata/empty.html", "", "", "", true},
-		{"Full Page", "testdata/sample.html", "Мыс страха", "50AD87D0A55D32440B91FA66EE24B71AD8A3E190", "https://rutracker.org/forum/dl.php?t=6868691", false},
+		{"Empty Page", "testdata/empty.html", "", "", true},
+		{"Full Page", "testdata/sample.html", "Мыс страха", "50AD87D0A55D32440B91FA66EE24B71AD8A3E190", false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -39,7 +38,7 @@ func TestFetchInfo(t *testing.T) {
 			if err != nil {
 				t.Error(err)
 			}
-			title, hash, link, err := client.FetchInfo(context.Background(), ts.URL)
+			title, hash, err := client.FetchInfo(context.Background(), ts.URL)
 			if (err != nil) != tt.wantErr {
 				t.Fatalf("FetchInfo() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -48,9 +47,6 @@ func TestFetchInfo(t *testing.T) {
 			}
 			if hash != tt.wantHash {
 				t.Errorf("got %v, want %v", hash, tt.wantHash)
-			}
-			if link != tt.wantLink {
-				t.Errorf("got %v, want %v", link, tt.wantLink)
 			}
 		})
 	}
