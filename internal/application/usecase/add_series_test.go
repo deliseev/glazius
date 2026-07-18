@@ -13,15 +13,16 @@ import (
 type mockTrackerClient struct {
 	title   string
 	hash    string
+	link    string
 	err     error
 	torrent []byte
 }
 
-func (tc *mockTrackerClient) FetchInfo(ctx context.Context, url string) (title string, infoHash string, err error) {
+func (tc *mockTrackerClient) FetchInfo(ctx context.Context, url string) (title string, infoHash string, link string, err error) {
 	if tc.err != nil {
-		return "", "", tc.err
+		return "", "", "", tc.err
 	}
-	return tc.title, tc.hash, nil
+	return tc.title, tc.hash, tc.link, nil
 }
 
 func (tc *mockTrackerClient) DownloadTorrent(ctx context.Context, url string) (torrentBytes []byte, err error) {

@@ -45,7 +45,7 @@ func (uc *CheckUpdatesUseCase) Execute(ctx context.Context) error {
 }
 
 func (uc *CheckUpdatesUseCase) checkSingleSeries(ctx context.Context, s entity.Series) error {
-	title, infoHash, err := uc.tracker.FetchInfo(ctx, s.URL)
+	title, infoHash, link, err := uc.tracker.FetchInfo(ctx, s.URL)
 	if err != nil {
 		return fmt.Errorf("fetch: %w", err)
 	}
@@ -55,7 +55,7 @@ func (uc *CheckUpdatesUseCase) checkSingleSeries(ctx context.Context, s entity.S
 	}
 
 	// Логика обновления
-	torrentBytes, err := uc.tracker.DownloadTorrent(ctx, s.URL)
+	torrentBytes, err := uc.tracker.DownloadTorrent(ctx, link)
 	if err != nil {
 		return fmt.Errorf("failed to download torrent for %s: %w", s.Title, err)
 	}

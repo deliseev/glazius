@@ -36,7 +36,7 @@ func main() {
 	}
 
 	// Инициализация зависимостей (DI контейнер)
-	trackerClient, err := tracker.NewRutrackerClient()
+	trackerClient, err := tracker.NewRutrackerClient(config)
 	if err != nil {
 		log.Fatalf("client error: %v", err)
 	}
@@ -54,7 +54,7 @@ func main() {
 	switch os.Args[1] {
 	case "login":
 		// Инициализируем клиент (который создает новый Jar)
-		client, _ := tracker.NewRutrackerClient()
+		client, _ := tracker.NewRutrackerClient(config)
 		err := client.Login(ctx, "dan1us", "RanyX")
 		if err != nil {
 			log.Fatalf("Login failed: %v", err)
@@ -76,12 +76,12 @@ func main() {
 		}
 
 		// Попробуем скачать торрент напрямую по topic_id (из твоего debug.html это 6880649)
-		torrentBytes, err := trackerClient.DownloadTorrent(ctx, url)
-		if err != nil {
-			log.Fatalf("Download failed: %v", err)
-		}
+		// torrentBytes, err := trackerClient.DownloadTorrent(ctx, url)
+		// if err != nil {
+		// 	log.Fatalf("Download failed: %v", err)
+		// }
 
-		fmt.Printf("Скачано байт: %d\n", len(torrentBytes))
+		// fmt.Printf("Скачано байт: %d\n", len(torrentBytes))
 
 		uc := usecase.NewAddSeriesUseCase(trackerClient, repo, storage)
 		err = uc.Execute(ctx, url)

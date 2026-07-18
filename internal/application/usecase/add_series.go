@@ -25,13 +25,13 @@ func NewAddSeriesUseCase(tracker port.TrackerClient, repository port.SeriesRepos
 
 func (uc AddSeriesUseCase) Execute(ctx context.Context, url string) error {
 	// 1. Получаем инфо (заголовок и хеш)
-	title, infoHash, err := uc.tracker.FetchInfo(ctx, url)
+	title, infoHash, link, err := uc.tracker.FetchInfo(ctx, url)
 	if err != nil {
 		return fmt.Errorf("fetch error: %w", err)
 	}
 
 	// 2. Скачиваем торрент сразу
-	torrentBytes, err := uc.tracker.DownloadTorrent(ctx, url)
+	torrentBytes, err := uc.tracker.DownloadTorrent(ctx, link)
 	if err != nil {
 		return fmt.Errorf("download error: %w", err)
 	}
