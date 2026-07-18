@@ -7,6 +7,7 @@ import (
 
 	"github.com/deliseev/glazius/internal/application/usecase"
 	"github.com/deliseev/glazius/internal/domain/entity"
+	"github.com/deliseev/glazius/internal/infrastructure/storage"
 )
 
 type mockTrackerClient struct {
@@ -89,9 +90,11 @@ func TestAddSeriesUseCase(t *testing.T) {
 				torrent: []byte{},
 			}
 			repository := &mockRepository{store: make(map[string]entity.Series)}
+			storage := storage.NewMemoryStorage()
 			useCase := usecase.NewAddSeriesUseCase(
 				tracker,
 				repository,
+				storage,
 			)
 			ctx := context.Background()
 

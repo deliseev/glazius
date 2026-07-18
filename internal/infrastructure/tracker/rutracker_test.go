@@ -34,7 +34,10 @@ func TestFetchInfo(t *testing.T) {
 			}))
 			defer ts.Close()
 
-			client := tracker.NewRutrackerClient(http.DefaultClient)
+			client, err := tracker.NewRutrackerClient()
+			if err != nil {
+				t.Error(err)
+			}
 			title, hash, err := client.FetchInfo(context.Background(), ts.URL)
 			if (err != nil) != tt.wantErr {
 				t.Fatalf("FetchInfo() error = %v, wantErr %v", err, tt.wantErr)
