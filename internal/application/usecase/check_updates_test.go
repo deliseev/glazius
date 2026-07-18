@@ -17,9 +17,6 @@ func TestCheckUpdatesUseCase_Execute(t *testing.T) {
 		FetchInfoFn: func(ctx context.Context, url string) (string, string, string, error) {
 			return "Title", newHash, "", nil
 		},
-		DownloadTorrentFn: func(ctx context.Context, url string) ([]byte, error) {
-			return []byte("new-torrent-data"), nil
-		},
 	}
 
 	repo := &testutils.RepoMock{
@@ -34,21 +31,7 @@ func TestCheckUpdatesUseCase_Execute(t *testing.T) {
 		},
 	}
 
-	storage := &testutils.StorageMock{
-		GetFn:  func(hash string) ([]byte, error) { return []byte("old-data"), nil },
-		SaveFn: func(h string, d []byte) error { return nil },
-	}
-
-	parser := &testutils.ParserMock{
-		ParseFn: func(data []byte) (entity.TorrentData, error) {
-			if string(data) == "new-torrent-data" {
-				return entity.TorrentData{Files: []entity.TorrentFile{{Path: "new.mkv", Size: 100}}}, nil
-			}
-			return entity.TorrentData{Files: []entity.TorrentFile{{Path: "old.mkv", Size: 100}}}, nil
-		},
-	}
-
-	uc := usecase.NewCheckUpdatesUseCase(tracker, repo, storage, parser)
+	uc := usecase.NewCheckUpdatesUseCase(tracker, repo)
 	err := uc.Execute(context.Background())
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)

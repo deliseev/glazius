@@ -7,5 +7,6 @@ type Series struct {
 	Description    string
 	BaseInfoHash   string
 	LatestInfoHash string
+	TorrentLink    string
 	PendingAck     bool
 }
